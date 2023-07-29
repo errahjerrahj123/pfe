@@ -1,0 +1,91 @@
+<%-# ENIM
+#Copyright 2010 Cactus IT Technologies Private Limited
+#
+#This product includes software developed at
+#Project ENIM - http://www.projectENIM.org/
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing,
+#software distributed under the License is distributed on an
+#"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#KIND, either express or implied.  See the License for the
+#specific language governing permissions and limitations
+#under the License. -%>
+
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+    <%#= link_to t('configuration_text')+" "+"Académique", { :controller => "configuration", :action => "advanced" }  %> &nbsp;
+      &raquo;&nbsp;
+    <%= t('courses_text') %>- <%= t('home') %>
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('Niveaux') %> - <%= t('Acceuil') %></h1>
+      </div>
+    </div><!--/.row-->
+
+    <div class="row">
+
+      <% unless flash[:notice].nil? %>
+        <div class="col-md-12 pull-left">
+          <p class="flash-msg"> <%= flash[:notice] %> </p>
+        </div>
+      <% end %>
+
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading" style="font-size: 16px;">
+              <%= link_to "Gérer les niveaux" ,{controller: 'courses' ,  action: 'manage_courses'} %></div>
+            <div class="panel-body" style="height: 84px;">
+              <p><%= t('Gérer les niveaux et créer les classes') %></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading" style="font-size: 16px;">
+              <%= link_to ('Gérer les classes') ,{controller: 'courses' ,action: 'manage_batches'} %></div>
+            <div class="panel-body" style="height: 84px;">
+              <p><%= t('Gérer classes actifs') %></p>
+            </div>
+          </div>
+        </div>
+        <!--
+          <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading" style="font-size: 16px;">
+            <%#= link_to "import" ,:action=>'importsubjects' %></div>
+            <div class="panel-body" style="height: 84px;">
+              <p> importer </p>
+            </div>
+          </div>
+        </div>
+      -->
+      
+          <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading" style="font-size: 16px;">
+              <%= link_to "Voir les classes par filière." ,{controller: 'courses' ,action: 'rechercher_par_filiere'} %></div>
+            <div class="panel-body" style="height: 84px;">
+              <p> Rechercher par filière </p>
+            </div>
+          </div>
+        </div>
+      
+        <div class="extender"></div>
+    </div>
+  </div>
+</div>

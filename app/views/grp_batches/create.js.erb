@@ -1,0 +1,17 @@
+// app/views/grp_batches/create.js.erb
+<% if @grp_batch.errors.empty? %>
+  // Handle successful form submission
+  // Optionally update the view or perform any other actions
+
+  // Example: Close a modal or show a success message
+  $('#myModal').modal('hide');
+  $('#successMessage').show().text('GrpBatch was successfully created.');
+<% else %>
+  // Handle form submission with errors
+  // Optionally update the view or display error messages
+
+  // Example: Show error messages next to form fields
+  <% @grp_batch.errors.full_messages.each do |message| %>
+    $('<span>').addClass('error').text('<%= message %>').insertAfter($('#<%= f.object_name %>_<%= f.attribute_name %>').parent());
+  <% end %>
+<% end %>

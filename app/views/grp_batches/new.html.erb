@@ -1,0 +1,72 @@
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+    <%= link_to t('configuration_text') + " " + "Académique", { controller: "configuration", action: "advanced" } %>
+    <%= link_to t('courses_text') + "-" + t('home'), { controller: "courses", action: "index" } %>
+    <%= link_to t('manage_course'), manage_courses_path %>
+    <%= link_to t('courses_text') + "-" + t('show'), { controller: "courses", action: "show", id: @course.id } %>
+    <%= "Groupes de classe" %>
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h2 class="page-header">Les groupes des classes pour : <%= @course.course_name %></h2>
+      </div>
+    </div>
+    <div class='row'>
+      <% unless flash[:notice].nil? %>
+        <p class="flash-msg"> <%= flash[:notice] %> </p>
+      <% end %>
+      <%= form_with model: @grp_batch, url: { controller: 'grp_batches', action: 'create' }, remote: true do |f| %>
+        <div class="box">
+          <%#= f.error_messages %>
+          <%= f.hidden_field :course_id, value: @course.id %>
+          <div class="form-group col-md-12 pull-left pull-left">
+            <label class="control-label" for="user_username"><%= t('name') %></label>
+            <%= f.text_field :name, class: "form-control" %>
+          </div>
+
+          <br>
+          <div>
+            <%= submit_tag ('Enregistrer') %>
+          </div>
+      <% end %>
+      <br><br>
+      <div id='listelg'>
+        <table id="listing" width="100%" class="table table-bordered table-lg table-v2 table-striped fixed_headers">
+          <% unless @grp_batches.blank? %>
+            <tr class="tr-head">
+              <td>Nom</td>
+              <td>Niveau</td>
+              <td></td>
+            </tr>
+            <tr class="tr-blank"></tr>
+            <% @grp_batches.each do |lg| %>
+              <tr class="tr-<%= cycle('odd', 'even') %>">
+                <td>
+                  <%= link_to lg.name, show_batches_path(course_id: lg.course_id, id: lg.id) %>
+
+                </td>
+                <td><%= Course.find(lg.course_id).course_name %></td>
+                <td><%#= button_to new_grp_batch_path, method: :delete, data: { confirm: 'Are you sure?' } do %>
+                  <%= button_to "Delete Text",  {contoller: "grp_batches" , action: "destroy", id: lg.id} ,  method: :delete, data: { confirm: 'Are you sure?' } %>
+    </td>
+
+                <%#= button_to course_path(course), method: :delete, data: { confirm: 'Are you sure?' } do %>
+
+<%# end %>
+
+              </tr>
+            <% end %>
+          <% end %>
+        </table>
+      </div>
+    </div>
+  </div>
+</div

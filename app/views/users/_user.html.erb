@@ -1,0 +1,53 @@
+<% if @users.nil? or @users.empty? %>
+  <div id="user_no_result"><%= t('no_users') %></div>
+<% else %>
+  <div class="students-table">
+    <table class="table table-bordered table-lg table-v2 table-striped" align="center" width="100%" cellpadding="1" cellspacing="1">
+      <tr class="tr-head">
+        <td>
+          <%= t('sl_no') %>
+        </td>
+        <td>
+          <%= t('name') %>
+        </td>
+        <td>
+        <%= t('username') %>
+        </td>
+        <td>
+        
+        </td>
+      </tr>
+      <tr>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+      </tr>
+      <% @users.each_with_index do |user,i| %>
+        <tr class="tr-<%= cycle('odd', 'even') %>">
+          <td class="">
+            <%= i+1 %>
+          </td>
+          <td class="">
+      <%=  user.full_name %>
+          </td>
+          <td class="">
+            <%= user.username %>
+          </td>
+          <td class="">
+            <%= link_to "'view_profile'", controller: 'user', action: 'profile', id: user.username  %>
+          </td>
+
+        </tr>
+      <% end %>
+    </table>
+  </div>
+<% end %>

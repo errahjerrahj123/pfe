@@ -1,0 +1,114 @@
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+      <%= link_to t('manage_users'), utilisateurs_path %> &nbsp;&raquo;&nbsp;
+<%= t('all_users') %>
+
+   </li>
+</ul>
+ <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('details_about_user') %></h1>
+      </div>
+    </div><!--/.row-->
+    <div class="row">
+      <div class="col-md-12 pull-left">
+        <% if flash[:notice].present? %>
+  <p class="flash-msg"><%= flash[:notice] %></p>
+<% end %>
+
+<div class="row">
+  <div class="form-group col-md-12 pull-left">
+    <div  >
+   <%= form_tag(users_listuser_path) do %>
+  <%= observe_select_field :role,
+                           [['Select', 'select'],['Admin', 'admin'], ['Student', 'student'], ['Employee', 'employee']],
+                           before: "Element.show('loader')",
+                           success: "Element.hide('loader')" %>
+<% end %>
+
+
+    </div>
+    <div id="selectuser"> </div>
+  <%#= select :user_type, :type, [["#{t('admin')}","Admin"], ["Intervenant","Employee"],["#{t('student_text')}","Student"],["#{t('parent')}","Parent"]],
+  {:prompt => "#{t('select_a_role')}"},
+  {:data => { :url => url_for(action: "list_user") },
+   :remote => true,
+   :before => "Element.show('loader')",
+   :success => "Element.hide('loader')" } %>
+
+   <%#= select :user_type, :type, [["Admin"], ["Employee"],["Student"],["Parent"]],
+  {:prompt => "select_a_role"
+  {:data => { :action => url_for(action: "list_user") },
+   :remote => true,
+   :before => "Element.show('loader')",
+   :success => "Element.hide('loader')" } %>
+
+   <%#= form_tag({ controller: 'users', action: 'list_user' }, method: 'post') do  %>
+  <%#= select 'select_a_role', options_for_select([["Admin", "Admin"], ["Student", "Student"], ["Employee", "Employee"], ["Parent", "Parent"]]) %>
+  <%#= select :school_field, :id,  options_for_select([["Admin", "Admin"], ["Student", "Student"], ["Employee", "Employee"], ["Parent", "Parent"]]),
+               {:prompt => "#{t('select_school_field')}"} , {:class=>"form-control"} %>
+  
+<%# end %>
+<%#= form_tag({ action: 'list_user', method: 'post', enctype: 'multipart/form-data' }, id: 'msform', remote: true) do %>
+  <%#= select_tag :user_type, options_for_select([["Admin", "Admin"], ["Student", "Student"], ["Employee", "Employee"], ["Parent", "Parent"]]), prompt: 'select' %>
+  
+<%# end %>
+<%#= link_to t('view_all'), action: :list_user , :user_type=> "Admin" %>
+
+
+<%#= select_tag :user_type, options_for_select(['Admin', 'Employee', 'Student']), prompt: 'Select User Type', id: 'userTypeSelect' %>
+
+
+
+<%#= form_with(model: @user) do |form| %>
+<%#= form.select :two, [['admin',1],['employee',2]] %>
+<%#= f.submit 'Submit' %>
+
+  <%# end %>
+
+
+
+
+  </div>
+</div>
+ <div id="student_user" class="form-group col-md-12 pull-left">
+
+          </div>
+          <div id="employee_user" class="form-group col-md-12 pull-left">
+
+          </div>
+        </div>
+        <div class='row'>
+          <div id="users" class="col-md-12 pull-left">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  const select = document.querySelector('#role');
+
+  select.addEventListener('change', function (event) {
+    const value = event.target.value;
+    var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       // Typical action to be performed when the document is ready:
+       document.getElementById("users").innerHTML = xhttp.responseText;
+    }
+};
+xhttp.open("POST", "/users/listuser?role=" + value , true);
+xhttp.setRequestHeader('X-CSRF-Token', document.querySelector('meta[name=csrf-token]').content);
+xhttp.send();
+  });
+</script>
+

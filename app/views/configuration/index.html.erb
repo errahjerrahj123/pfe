@@ -1,0 +1,184 @@
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+    <%= t('configuration_text') %>
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('configuration_text') %> - <%= t('home') %></h1>
+      </div>
+    </div><!--/.row-->
+
+    <div class="row">
+
+      <% unless flash[:notice].nil? %>
+        <div class="col-md-12 pull-left">
+          <p class="flash-msg"> <%= flash[:notice] %> </p>
+        </div>
+      <% end %>
+
+      <% if can? :create, Course %>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading" style="font-size: 16px;">
+              <%= link_to "manage_course_batch", {controller: "courses" , action: "index"} %></div>
+            <div class="panel-body" style="height: 84px;">
+              <p><%#= t('add_a_new_course_or_batch') %></p>
+            </div>
+          </div>
+        </div>
+      <%end %>
+
+      <% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "#{t('manage_student_category')}", :controller => "student", :action => "categories" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('add_student_category') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+<% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "#{t('general_settings')}", :action => "settings" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('set_some_general_configuration') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+<% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "#{t('add_admission_additional_detail')}", :controller=>"student", :action => "add_additional_details" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('set_some_additional_details') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+     <% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "#{t('sms_module')}", :controller=>"sms", :action => "index" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('enable_or_disable_sms_settings') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+   <% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "#{t('add_module_types')}", :controller => "module_types", :action => "index" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('manage_module_types') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+  <% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "#{t('add_module')}", :controller => "school_modules", :action => "index" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('manage_module') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+   <% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "#{t('add_school_fields')}", :controller => "school_fields", :action => "index" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('manage_school_fields') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+  <% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "#{t('manage_subject')}", :controller => "subject_groups", :action => "index" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('add_subject_group') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+ <% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "Sauvegarde base de données", :controller => "exam", :action => "copy_template_database" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= "Sauvegarde base de données" %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+<% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to 'Gestion des salles', :controller => "classrooms", :action => "index" %>
+</div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= "Gestion des salles..." %></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to 'Importer data from apooge', :controller => "online_students", :action => "import_data" %>
+</div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= "Importer data from apooge..." %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+
+ <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%#= link_to "Desactiver emploi du temps", :controller => "timetable", :action => "disable_timetables" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= "Desactiver emploi du temps" %></p>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+
+    </div>
+  </div>
+</div>

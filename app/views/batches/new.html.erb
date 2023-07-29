@@ -1,0 +1,97 @@
+<%-# ENIM
+#Copyright 2010 Cactus IT Technologies Private Limited
+#
+#This product includes software developed at
+#Project ENIM - http://www.projectENIM.org/
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing,
+#software distributed under the License is distributed on an
+#"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#KIND, either express or implied.  See the License for the
+#specific language governing permissions and limitations
+#under the License. -%>
+<style>
+.form-group {
+    height: 66px;
+}
+</style>
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+ 
+  <li class="breadcrumb-item">
+    <%= link_to t('configuration_text')+" "+"Académique", { controller: "configuration", action: "advanced" }  %> &nbsp;
+      &raquo;&nbsp;
+    <%= link_to t('courses_text')+"-"+ t('home'), { controller:  "courses", action: "index" }  %> &nbsp;&raquo;&nbsp;
+   <%= link_to t('manage_course'), manage_courses_path(@course) %>
+
+     <%= link_to t('courses_text') + "-"+t('show') , { controller: "courses", action: "show", id: @course.id }  %> &nbsp;&raquo;&nbsp;
+    <%=  t('new_batch')   %>
+    
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('new_batch') %></h1>
+      </div>
+    </div>
+
+    <div class="row">
+
+      
+
+
+      <%= form_with(model: [@course, @batch]) do |f| %>
+        <%#= f.error_messages  %>
+        <div class="form-group col-md-6 pull-left">
+          <label class="control-label"><%= t('name') %></label>
+          <%= f.text_field :name, :class=>"form-control" %>
+        </div>
+
+
+ <div id="datepicker">
+<div class="picker"><label for="start_date" >Date Début:</label>
+  <%= date_field_tag 'start_date', '', class: 'datepicker1' %></div>
+  
+  <br><br>
+  <div class="picker"><label for="end_date">Date Fin :</label>
+  <%= date_field_tag 'end_date', '', class: 'datepicker1' %></div>
+  <br><br> -->
+      
+
+
+        <div class="form-group col-md-6 pull-left" style="display:none;">
+          <label class="control-label"><%= t('import_subject') %></label>
+          <%= check_box_tag 'import_subjects',"0",false %>
+        </div>
+
+        <div class="form-group col-md-6 pull-left" style="display:none;">
+          <label class="control-label"><%= t('import_fees') %></label>
+          <%= check_box_tag 'import_fees',"0",false %>
+        </div>
+        <div class="form-group col-md-6 pull-left">
+          <label class="control-label"><%= "#{t('school_field')}" %></label>
+          <%= select_tag 'batch[school_field_id]', options_for_select(@school_fields.map {|u| [u.name,u.id]}), class: "form-control" %>
+
+        </div>
+        <div class="col-md-12 pull-left text-right">
+          <%= submit_tag "", value: ('Enregistrer'), :class => "btn btn-primary" %>
+        </div>
+
+      <% end %>
+      <div class="extender"></div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

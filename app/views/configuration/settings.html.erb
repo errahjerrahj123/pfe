@@ -1,0 +1,171 @@
+<style>
+.form-group {
+    height: 66px;
+}
+</style>
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+   <%= link_to t('configuration_text') , { :controller => "configuration", :action => "index" }  %> &nbsp;
+      &raquo;&nbsp;
+    <%= t('general_settings') %>
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('general_settings') %></h1>
+      </div>
+    </div><!--/.row-->
+
+    <div class="row">
+
+      <% unless flash[:notice].nil? %>
+        <div class=col-md-12 pull-left>
+          <p class="flash-msg"> <%= flash[:notice] %> </p>
+        </div>
+      <% end %>
+      <%= error_messages_for :school_detail %>
+
+      <% form_for(:configuration,:html=> {:multipart=>true}) do |c| %>
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_currency_type"><%= t('school_college_name') %></label>
+            <%= text_field :configuration, :institution_name, :value => @config[:institution_name], :class=>"form-control" %>
+          </div>
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_currency_type"><%= t('school_college_address') %></label>
+            <%= text_field :configuration, :institution_address, :value => @config[:institution_address], :class=>"form-control" %>
+          </div>
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_currency_type"><%= t('school_college_phone') %></label>
+            <%= text_field :configuration, :institution_phone_no, :value => @config[:institution_phone_no], :class=>"form-control" %>
+          </div>
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_student_attendance_type"><%= t('student_attendance_type') %></label>
+            <%= select :configuration, :student_attendance_type, [["#{t('daily_text')}", "Daily"], ["#{t('subject_wise_text')}", "SubjectWise"]], {}, { :class => 'form-control' , :selected => @config[:student_attendance_type] } %>
+          </div>
+          <div class="form-group costom_datepicker col-md-6 pull-left">
+            <label class="control-label" for="configuration_currency_type"><%= t('finance_year_start_date') %></label>
+            <%= calendar_date_select_tag 'configuration[financial_year_start_date]', @config[:financial_year_start_date],
+                :year_range => 15.years.ago..5.years.from_now, :readonly=>true, :popup=>"force" %>
+          </div>
+
+          <div class="form-group costom_datepicker col-md-6 pull-left">
+            <label class="control-label" for="configuration_currency_type"><%= t('finance_year_end_date') %></label>
+            <%= calendar_date_select_tag 'configuration[financial_year_end_date]', @config[:financial_year_end_date],
+                :year_range => 15.years.ago..5.years.from_now, :readonly=>true, :popup=>"force" %>
+          </div>
+
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_student_attendance_type"><%= "#{t('language') } " %></label>
+            <%= select :configuration, :locale, available_language_options,
+                  {}, { :class => 'form-control' , :selected => @config[:locale] } %>
+          </div>
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_student_attendance_type">Time Zone</label>
+            <%= select :configuration, :time_zone, @time_zones.map{|t| ["#{t.name}(#{t.code}) - GMT#{t.difference_type}#{Time.at(t.time_difference).gmtime.strftime('%R')}",t.id]}, {}, { :class => 'form-control' , :selected =>@config[:time_zone].to_i } %>
+          </div>
+
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_default_country"><%= t('country') %></label>
+            <% selected_value = @config[:default_country].present? ? @config[:default_country].to_i : 76 %>
+            <%= select :configuration, :default_country, @countries.map {|c| [c.name, c.id]}, {}, { :class => 'form-control' , :selected=> selected_value.to_i }  %>
+          </div>
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_currency_type"><%= t('currency_type') %></label>
+            <%= text_field :configuration, :currency_type, :value => @config[:currency_type], :class=>"form-control" %>
+          </div>
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_currency_type" style="width:100%;"><%= t('upload_logo') %></label>
+            <%= file_field 'school_detail','school_logo', :size=>12 %>
+          </div>
+          <div class="form-group col-md-6 pull-left">
+            <label class="control-label" for="configuration_currency_type"><%= t('network_state') %></label>
+            <%= select :configuration, :network_state, [["#{t('online')}","Online"],["#{t('offline')}","Offline"]] , {}, { :class => 'form-control' , :selected=> @config[:network_state] } %>
+          </div>
+          <div class="col-md-6 pull-left">
+            <div class="form-group">
+              <label class="control-label" for="configuration_grading_systems"><%= t('include_grading_systems') %></label>
+              <%= t('select') %>: <%= link_to_function t('all'), "$$('input.batches_box').each(function(checkbox) { checkbox.checked = true; });" %> -
+              <%= link_to_function t('none'), "$$('input.batches_box').each(function(checkbox) { checkbox.checked = false; });" %>
+              <% @grading_types.each do |key,val| %>
+                <div class="checkbox">
+                  <label>
+                    <%= check_box :configuration, val.underscore , :checked => (@enabled_grading_types.include? key),:class=>'batches_box' %><%= val %>
+                  </label>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <% FedenaPlugin::REGISTERED_HOOKS[:general_settings_form].each do |mod| %>
+            <%= render :partial=>mod.camelize.constantize.send("general_settings_form") %>
+          <% end %>
+          <div class="col-md-6 pull-left">
+            <div class="extender"></div>
+            <br/>
+            <% if @config[:admission_number_auto_increment] == '1' %>
+              <%= check_box :configuration, :admission_number_auto_increment, :checked => true %><%= t('student_admission_auto') %>
+            <% else %>
+              <%= check_box :configuration, :admission_number_auto_increment, :checked => false %><%= t('student_admission_auto') %>
+            <% end %>
+            <br/>
+            <% if Configuration.available_modules.include?('HR') %>
+              <% if @config[:employee_number_auto_increment] == '1' %>
+                <%= check_box :configuration, :employee_number_auto_increment, :checked => true %> <%= t('employee_admission_auto') %>
+              <% else %>
+                <%= check_box :configuration, :employee_number_auto_increment, :checked => false %><%= t('employee_admission_auto') %>
+              <% end %>
+            <% end %>
+            <br/>
+            <% if @config[:enable_news_comment_moderation] == '1' %>
+              <%= check_box :configuration, :enable_news_comment_moderation, :checked => true %><%= t('enable_news_comment_moderation') %>
+            <% else %>
+              <%= check_box :configuration, :enable_news_comment_moderation, :checked => false %><%= t('enable_news_comment_moderation') %>
+            <% end %>
+            <br/>
+            <% if @config[:note] == '1' %>
+              <%= check_box :configuration, :note, :checked => true %>Activer la saisie des notes dans l'établissement
+            <% else %>
+              <%= check_box :configuration, :note, :checked => false %>Activer la saisie des notes dans l'établissement
+            <% end %>
+            <br/>
+            <% if @config[:notear] == '1' %>
+              <%= check_box :configuration, :notear, :checked => true %>Activer la saisie des notes de rattrapage dans l'établissement
+            <% else %>
+              <%= check_box :configuration, :notear, :checked => false %>Activer la saisie des notes de rattrapage dans l'établissement
+            <% end %>
+            <br/>
+            <% if @config[:signupconcours] == '1' %>
+              <%= check_box :configuration, :signupconcours, :checked => true %>Activer l'inscription au Concours ENSMR
+            <% else %>
+              <%= check_box :configuration, :signupconcours, :checked => false %>Activer l'inscription au Concours ENSMR
+            <% end %>
+            <br/>
+             <% if @config[:saisieinfo] == '1' %>
+              <%= check_box :configuration, :saisieinfo, :checked => true %>Activer la saisie des information
+            <% else %>
+              <%= check_box :configuration, :saisieinfo, :checked => false %>Activer la saisie des information
+            <% end %>
+
+            <br/>
+            <% FedenaPlugin::REGISTERED_HOOKS[:general_settings_checkbox].each do |mod| %>
+            <br/>
+            <%= render :partial=>mod.camelize.constantize.send("general_settings_checkbox") %>
+            <% end %>
+          </div>
+          <div class="col-md-12 pull-left text-right">
+            <br>
+            <%= submit_tag "#{t('update')}", :class=>"btn btn-primary" %>
+          </div>
+
+        <% end %>
+
+    </div>
+  </div>
+</div>

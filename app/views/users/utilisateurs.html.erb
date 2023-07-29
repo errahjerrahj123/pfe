@@ -1,0 +1,103 @@
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+    <%= t('manage_users') %> 
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('detailed_about_user') %></h1>
+      </div>
+    </div><!--/.row-->
+    <div class="row">
+      <div class='col-md-6 pull-left'>
+        <div class="panel-default">
+          <div class="tabs">
+            <ul class="nav nav-tabs">
+          <li><%= link_to t('view_all'), action: :all %></li>
+              <li><%= link_to t('add_new'), action: :new %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class='col-md-6 pull-left text-right'>
+        <div>
+          <form name="search-form" id="search-form">
+            <%#= image_tag("loader.gif",
+              :align => "absmiddle",
+              :border => 0,
+              :id => "loader",
+              :style =>"display: none;" ) %>
+            </label>
+            <%= text_field_tag "query", params[:query], :autocomplete => 'off', :placeholder =>"#{t('search_user')}",
+            :class=>'form-control', :style=>"width: 200px;float: right;" %>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-md-12 pull-left">
+        <br><hr><br>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 pull-left">
+        <% unless flash[:notice].nil? %> <p class="flash-msg"> <%= flash[:notice] %> </p> <% end %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 pull-left">
+        <%#= observe_field 'query', :frequency => 0.5,
+        :update => 'user_information',
+        :url => { :action => 'search_user_ajax' },
+        :before => "Element.show('loader')",
+        :success => "Element.hide('loader')",
+        :with => 'query' %>
+        <script type="text/javascript">
+  import { Controller } from "@hotwired/stimulus";
+
+  export default class extends Controller {
+    static targets = ["query", "loader", "userInformation"];
+
+    connect() {
+      this.queryObserver = new MutationObserver(this.searchUserAjax.bind(this));
+      this.queryObserver.observe(this.queryTarget, { childList: true, subtree: true });
+    }
+
+    disconnect() {
+      this.queryObserver.disconnect();
+    }
+
+    searchUserAjax() {
+      if (this.queryTarget.value.includes("%")) return;
+
+      this.loaderTarget.style.display = "block";
+
+      const url = this.data.get("url");
+      const query = this.queryTarget.value;
+
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: query })
+      })
+        .then(response => response.text())
+        .then(html => {
+          this.loaderTarget.style.display = "none";
+          this.userInformationTarget.innerHTML = html;
+        });
+    }
+  }
+</script>
+
+      <div id="user_information"> </div>
+      <div class="extender"> </div>
+    </div>
+  </div>
+</div>
+</div>

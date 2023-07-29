@@ -1,0 +1,81 @@
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+   <%= t('configuration_text') %> Académique
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('configuration_text') %> académique</h1>
+      </div>
+    </div><!--/.row-->
+
+    <div class="row">
+
+      <% unless flash[:notice].nil? %>
+        <div class="col-md-12 pull-left">
+          <p class="flash-msg"> <%= flash[:notice] %> </p>
+        </div>
+      <% end %>
+   
+      <% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;"><%= link_to "#{t('manage_subject')}", :controller => "subject_groups", :action => "index" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('manage_subject') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+<% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;">
+                <%= link_to "#{t('manage_module')}", :controller => "school_modules", :action => "index" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('manage_module') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+<% if can? :settings, :configuration %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="font-size: 16px;"><%= link_to "#{t('manage_school_fields')}", :controller => "school_fields", :action => "index" %></div>
+              <div class="panel-body" style="height: 84px;">
+                <p><%= t('manage_school_fields') %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <% if can? :settings, :configuration %>
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading" style="font-size: 16px;"><%= link_to "#{t('manage_course_batch')}", courses_path %></div>
+            <div class="panel-body" style="height: 84px;">
+              <p><%= t('add_a_new_course_or_batch') %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+
+
+
+  
+
+
+
+
+
+
+    </div>
+  </div>
+</div>

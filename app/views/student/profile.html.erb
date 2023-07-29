@@ -1,0 +1,280 @@
+<%-# EMI
+#Copyright 2010 Cactus IT Technologies Private Limited
+#
+#This product includes software developed at
+#Project EMI - http://www.projectEMI.org/
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing,
+#software distributed under the License is distributed on an
+#"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#KIND, either express or implied.  See the License for the
+#specific language governing permissions and limitations
+#under the License. -%>
+
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+    <%= t('student_info') %>
+  </li>
+</ul>
+
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('student_profile') %></h1>
+      </div>
+    </div><!--/.row-->
+
+
+    <div class="row">
+      <div class="col-md-12 pull-left">
+        <div class="panel-default">
+          <div class="tabs">
+            <ul class="nav nav-tabs">
+              <li style="">
+              
+  <a href="#" class="drops" id="link_onee"><%= "Relevé Global" %> &#9660;</a>
+  <ul id="box_one" class="scriptaculously" style="display:none;width:162px;">
+    <li style="width:164px;"><%= link_to "Relevé Annuel", controller: 'student', action: 'sans_semestre', id: @student.id %></li>
+    <li style="width:164px;"><%= link_to "Relevé Annuel sans Rattr", controller: 'student', action: 'sans_semestre_sans_rattr', id: @student.id %></li>
+  </ul>
+</li>
+
+              <% if can? :reports , :student %>
+  <li><%= link_to "#{t('reports_text')}", controller: 'student', action: 'reports', id: @student %></li>
+<% end %>
+<!--<% if can?(:guardians, :student) %>
+  <li><%= link_to "#{t('guardians_text')}", controller: 'student', action: 'guardians', id: @student.id %></li>
+<% end %>-->
+<li><%= link_to "#{t('history')}", controller: 'student', action: 'history', id: @student.id %></li>
+<li><%= link_to "Carte étudiant", controller: 'student', action: 'student_card', id: @student.id %></li>
+<li><%= link_to "Gestion carte étudiant", controller: 'student', action: 'gestion_student_card', id: @student.id %></li>
+<% if can?(:email, :student) %>
+  <% @config = Configuration.find_by(config_key: 'NetworkState').config_value %>
+  <% if @config == 'Online' %>
+    <li><%= link_to "#{t('send_email')}", controller: 'student', action: 'email', id: @student.id %></li>
+  <% end %>
+<% end %>
+<% if can?(:remove, :student) || can?(:admission1, :student) %>
+  <li><%= link_to "#{t('delete_text')}", controller: 'student', action: 'remove', id: @student.id %></li>
+<% end %>
+
+
+
+
+             <li>
+  <a href="." class="drops" id="link_one"><%= t('more') %> &#9660;</a>
+  <ul id="box_one" class="scriptaculously" style="display:none;">
+    <%# if @sms_module.include?('Finance') && can?(:fees, :student) %>
+      <li><%#= link_to "#{t('fees_text')}", controller: 'student', action: 'fees', id: @student.id %></li>
+    <%# end %>
+    <%#FedenaPlugin::ADDITIONAL_LINKS[:student_profile_more_menu].each do |mod| %>
+      <%# if can?(mod[:destination][:action].to_sym, mod[:destination][:controller].to_sym) %>
+        <li><%#= link_to "#{t(mod[:title])}", mod[:destination].merge(id: @student.id) %></li>
+      <%# end %>
+    <%# end %>
+  </ul>
+</li>
+
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <hr>
+      </div>
+    </div>
+
+<div class="row">
+
+<% unless flash[:notice].nil? %> <div class="col-md-12 pull-left"><p class="flash-msg"> <%= flash[:notice] %> </p> </div><% end %>
+
+      <div class="col-md-12 pull-left">
+
+        <div id="profile_picture_display">
+          <%# if @student.photo.file? %>
+            <%#= image_tag @student.photo.url %>
+          <%# else %>
+            <img src="/assets/userrr.png">
+          <%# end %>
+        </div>
+        <div id ="student_main_info">
+          <h5> <%= @student.full_name %>  </h5>
+          <h6> <%= t('course_text') %>: <%= @student.batch != nil ? @student.batch.course.full_name : " " %> </h6>
+          <h6> <%= t('batch') %> : <%= @student.batch.name unless @student.batch.nil? %> </h6>
+          <h6> <%= "Matricule" %> : <%= @student.matricule %> </h6>
+          <h6> <%= "Login" %> : <%= @student.admission_no %> </h6>
+        </div>
+        <div class="extender"> </div>
+        <hr>
+      </div>
+
+
+  <div class="col-md-12 pull-left">
+  <!--     <div class="profile_top_banner">
+      <span class="profile"><%= t('details') %></span>
+      <img src="/assets/userrr.png"></div> -->
+        <h3 ><%= t('details') %></h3>
+    <table class="table table-bordered table-lg table-v2 table-striped ">
+     <th><%= t('admission_date') %></th>
+    <td class="right"><%= I18n.l(@student.admission_date) unless @student.admission_date.nil? %></td>
+  </tr>
+  <tr>
+    <th><%= t('date_of_birth') %></th>
+    <td class="right"><%= I18n.l(@student.date_of_birth) unless @student.date_of_birth.nil? %></td>
+  </tr>
+  <tr>
+    <th><%= t('blood_group') %></th>
+    <td class="right"><%= @student.blood_group %></td>
+  </tr>
+  <tr>
+    <th><%= t('gender') %></th>
+    <td class="right"><%= t("#{@student.gender_as_text.downcase}") unless @student.gender.nil? %></td>
+  </tr>
+
+      <tr><th><%= t('nationality') %></th><td class="right"><%= @student.nationality.name unless @student.nationality_id.nil? %></td></tr>
+      <tr><th><%= t('language') %></th><td class="right"><%= @student.language %></td></tr>
+
+      <tr><th><%= t('category') %></th><td class="right"><%= @student.student_category.name unless @student.student_category.nil? %></td></tr>
+      <tr><th><%= t('religion') %></th><td class="right"><%= @student.religion %></td></tr>
+      <tr><th><%= t('address') %></th><td class="right"><%= @student.address_line1%><%= ', ' unless @student.address_line1.blank? %><%=  @student.address_line2 %></td></tr>
+<%#*<tr><td></td><td class="right"><%= @student.address_line2%>
+      <tr><th><%= t('city') %></th><td class="right"><%= @student.city %></td></tr>
+      <tr><th><%= t('state') %></th><td class="right"><%= @student.state %></td></tr>
+      <tr><th><%= t('zip') %></th><td class="right"><%= @student.pin_code %></td></tr>
+      <tr><th><%= t('country') %></th><td class="right"><%= @student.country.name unless @student.country_id.nil? %></td></tr>
+      <tr><th><%= t('phone') %></th><td class="right"><%= @student.phone1 %></td></tr>
+      <tr><th><%= t('mobile') %></th><td class="right"><%= @student.phone2 %></td></tr>
+      <tr><th><%= t('email') %></th><td class="right"><%= @student.email %></td></tr>
+      <% if !@student.batch.nil?%>
+      <% unless @student.batch.employee_id.nil? %>
+        <% @assigned_employees = Employee.find(:all,:conditions=>"FIND_IN_SET(id,\"#{@student.batch.employee_id}\")")  %>
+        <tr><th><%= t('group_tutor') %>(s) :</th><td class="right">
+            <% @tutors = @assigned_employees.map{|e| e.full_name} %>
+            <% @tutor_ids = @assigned_employees.map{|e| e.user.id} %>
+            <%= link_to @tutors.join(", "),:controller=>'reminder',:action=>'create_reminder',:send_to=>@tutor_ids.join(",")  %>
+          </td></tr>
+
+      <% end  %>
+      <% end %>
+      <%# FedenaPlugin::REGISTERED_HOOKS[:student_profile].each do |mod| %>
+        <%#= render :partial=>mod.camelize.constantize.send("student_profile_hook"),:locals=>{:student=>@student} %>
+      <%# end %>
+      <%# if @sms_setting.application_sms_active %>
+        <tr><th><%= t('sms_alerts') %></th><td class="right"><%= @student.is_sms_enabled?? "Enabled":"Disabled" %></td></tr>
+      <%# end  %>
+      <tr><th><%= t('contact_message') %></th><td class="right">
+          <%= link_to @immediate_contact.full_name, :controller => "student", :action => "guardians", :id => @student.id \
+            unless @immediate_contact.nil? %><%= "(" + @immediate_contact.mobile_phone.to_s + ")" if @immediate_contact and !@immediate_contact.mobile_phone %>
+          <% if @current_user.admin? %>
+            <% unless @immediate_contact.nil? %>
+              <span>(<%= link_to "#{t('change_contact')}", :controller => 'student', :action => 'admission3_1', :id => @student.id %>)</span>
+            <%else%>
+              <% if can? :add_guardian,:student %>
+                <span><%= t('no_guardian') %>(<%= link_to "#{t('add_guardian')}",:controller => 'student',:action => 'add_guardian', :id => @student.id %>)</span>
+              <%else%>
+                <span><%= t('no_guardian') %></span>
+              <%end%>
+            <%end%>
+          <% end %></td></tr>
+      <% unless  @additional_fields.empty? %>
+
+        <% @additional_fields.each do |field| %>
+          <% p =cycle('2',' ') %>
+          <tr>
+            <th><%= field.name %></th>
+            <td class="right">
+              <% detail = StudentAdditionalDetail.find_by_additional_field_id_and_student_id(field.id,@student.id) %>
+              <%= detail.additional_info unless detail.nil? %>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <th></th>
+          <td class="right">
+            <% detail = StudentAdditionalDetail.where(student_id: @student.id) %>
+            <% if can? :edit_admission4,:student %>
+              <% unless detail.blank? %>
+                <span> (<%= link_to "#{t('edit_additional_details')}", :controller => 'student', :action => 'edit_admission4', :id => @student.id %>)</span>
+              <% else %>
+                <span> (<%= link_to "#{t('add_additional_details')}", :controller => 'student', :action => 'admission4', :id => @student.id %>)</span>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      <% unless @previous_data.nil? %>
+        <tr><th></th><td class="right"><%= t('previous_details') %></td></tr>
+        <tr><th><%= t('previous_institution') %></th><td class="right"><%= link_to @previous_data.institution,:action=>'show_previous_details', :id => @student.id %></td></tr>
+      <%else%>
+        <% if can? :previous_data,:student %>
+          <tr><th></th><td class="right"><%= t('no_previous_data') %> (<%= link_to "#{t('add_previous_data')}", :controller => 'student', :action => 'previous_data', :id => @student.id %>)</td></tr>
+        <% else %>
+          <tr><th></th><td class="right"><%= t('no_previous_data') %></td></tr>
+        <% end %>
+      <% end %>
+    </table>
+
+
+    <% if @current_user.admin? %>
+      <div class="col-md-12">
+        <%= link_to " ► #{t('edit_text')}",
+          { :controller => "student", :action => "edit", :id => @student.id }, :class=> 'btn btn-primary'%>
+
+        <%= link_to " ► #{t('pdf_report')}",
+          {:controller => "student", :action => "profile_pdf", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+
+		<%= link_to " ► Attestation de scolarité",
+          {:controller => "student", :action => "attestation_scolarite", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+          <%= link_to " ► Diplome (LICENCE PROFESSIONNELLE )",
+          {:controller => "student", :action => "diplome", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+          <%= link_to " ► Attestation de reussite",
+          {:controller => "student", :action => "attestation_reussite", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+
+             <%= link_to "► Diplome (DUT)",
+          {:controller => "student", :action => "diplome_license_education", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+
+          <%= link_to " ► Demande stage PFE",
+          {:controller => "student", :action => "demande_pfe", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+
+          <%= link_to " ► Demande stage application",
+          {:controller => "student", :action => "demande_sa", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+                  <%= link_to " ► Demande ",
+          { :controller => "student", :action => "complete_registration", :id => @student.id }, :class=> 'btn btn-primary'%>
+
+      </div>
+
+    <% elsif can? :edit, :student %>
+      <div class="col-md-12">
+        <%= link_to " ► #{t('edit_text')}",
+          { :controller => "student", :action => "edit", :id => @student.id },:class => "btn btn-primary"%>
+
+        <%= link_to " ► #{t('pdf_report')}",
+          {:controller => "student", :action => "profile_pdf", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+
+		      <%= link_to " ► Attestation de scolarité",
+          {:controller => "student", :action => "attestation_scolarite", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+
+          <%= link_to " ► Demande stage PFE",
+          {:controller => "student", :action => "demande_pfe", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+
+          <%= link_to " ► Demande stage application",
+          {:controller => "student", :action => "demande_sa", :id => @student.id},:target => '_blank', :class=> 'btn btn-primary' %>
+      </div>
+    <% end %>
+
+  </div>
+</div>
+</div>
+</div>

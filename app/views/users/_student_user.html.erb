@@ -1,0 +1,23 @@
+hhhhhhhhhhhhhhhhhhhhhhhhhhhh
+
+<div class="form-group col-md-6">
+  <div class=" ">
+
+
+    <%= form_tag(users_listuser_path) do %>
+  <%= observe_select_field :role,
+                           [['Admin', 'admin'], ['Student', 'student'], ['Employee', 'employee']],
+                           onchange: "alert('Select field changed!'); this.form.submit();",
+                           before: "Element.show('loader')",
+                           success: "Element.hide('loader')" %>
+<% end %>
+    <%#= select_tag 'batch[batch_id]',
+                   options_for_select(Batch.active.all.map { |c| [c.full_name, c.id] }),
+                   prompt: "#{t('select_a_batch')}",
+                   data: {
+                     action: "change->user#listStudentUser",
+                     controller: "user",
+                     target: "loader"
+                   } %>
+  </div>
+</div>

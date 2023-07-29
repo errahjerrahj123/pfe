@@ -1,0 +1,440 @@
+<style>
+.text-input-bg select {
+  margin: 0;
+  width: 100%;
+}
+.text-input-bg {
+  float: none;
+  padding: 5px; }
+  .submit_button {
+    padding: 7px 10px;
+    color: #fff;
+    background: #27292B;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    border: none;
+    font-family: arial;
+    cursor: pointer;
+}
+</style>
+
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+    <a href="."><%= 'DEMANDE DES DOCUMENTS' %></a>
+  </li>
+</ul>
+
+
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= 'DEMANDE DES DOCUMENTS' %></h1>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-12 pull-left">
+        <div class="panel-default">
+          <div class="tabs">
+            <ul class="nav nav-tabs">
+                    <% if @current_user.admin? %>
+    <li>
+
+
+
+    </li>
+    <% end %>
+<% if @current_user.student? %>
+    <li><%= link_to "Nouvelle demande", :action => 'new' %> </li>
+<% end %>
+<!--  <% if @current_user.admin? %>
+      <li><%= link_to "#{t('show_all')}", :controller => 'requestdoc_students', :action => 'inactive' %> </li>
+
+  <% end %>
+-->
+            </ul>
+          </div>
+        </div>
+        <hr>
+      </div>
+    </div>
+
+
+<!-- </div> -->
+<% unless flash[:notice].nil? %>
+    <p class="flash-msg"> <%= flash[:notice] %> </p>
+<% end %>
+
+<!-- Start of filters -->
+
+<%
+#this ones is for "type" filters
+        if params[:requestdoc].to_i == 9
+            @doc_types = RequestdocStudent.find_by_sql("select distinct rdv_doc from requestdoc_students where rdv_doc is not null")
+        elsif params[:requestdoc].to_i == 13
+            @doc_types = RequestdocStudent.find_by_sql("select distinct doc_specification from requestdoc_students where doc_specification is not null")
+        else
+            @doc_types = []
+        end
+%>
+
+<%# if @current_user.admin? || @current_user.privileges.exists?(name: "GestionDemandes") %>
+<div id="tabe">
+<table class="table table-bordered table-lg table-v2 table-striped" align="center" width="100%" cellpadding="1" cellspacing="1"style="text-align:center;margin-top:50px;">
+  <tr class="tr-head" style="text-align:center;">
+    <td colspan="3" style="text-weight:600;">Filtrer</td>
+  </tr>
+  <tr class="tr-head" style="text-align:center;">
+    <td>Type document</td>
+    <td>Statut</td>
+    <td><%= t('school_year') %></td>
+
+  </tr>
+  <tr class="tr-even" style="text-align:center;">
+    <td>
+      <div class="col-md-12 pull-left">
+        <div class="form-group">
+          <label class="control-label" for="name"></label>
+
+     <div style="margin: 0 auto;">
+  <%= select_tag :requestdoc_id, options_for_select(Requestdoc.all.map { |u| [u.name, u.id] }), prompt: "Document",
+                 data: {
+                   remote: true,
+                   url: { controller: "requestdoc_students", action: "filters", method: :get },
+                   with: "'requestdoc=' + this.value + '&sf=' + $('school_field_id').value + '&batch=' + $('batch_id').value + '&sy=' + $('school_year_id').value + '&statut=' + $('statut').value + '&es_type=' + true + '&doc_spec=' + $('doctype_id').value + '&printed=' + $('printed').value",
+                   before: "Element.show('loader')",
+                   success: "Element.hide('loader')"
+                 }
+  %>
+</div>
+
+        </div>
+    </td>
+    <td>
+            <div class="col-md-12 pull-left">
+        <div class="form-group">
+          <label class="control-label" for="name"></label>
+      <div style="margin: 0 auto;">
+      <select id="statut">
+        <option value="" selected disabled>Statut</option>
+        <option value="1">signé</option>
+        <option value="3">validé</option>
+        <option value="null">encours</option>
+        <option value="0">rejeté</option>
+      </select>
+    </div>
+    </div>
+    </td>
+    <td>
+      <div class="col-md-12 pull-left">
+        <div class="form-group">
+          <label class="control-label" for="name"></label>
+      <div style="margin: 0 auto;">
+  <%= select_tag :school_year_id, options_for_select(@school_years.map { |u| [u, u.id] }),
+                 selected: "",
+                 prompt: "#{t('school_year')}",
+                 data: {
+                   remote: true,
+                   url: { controller: "requestdoc_students", action: "filters", method: :get },
+                   with: "$('requestdoc_id').value, $('school_field_id').value, $('batch_id').value, $('school_year_id').value, $('statut').value, $('doctype_id').value, $('printed').value",
+                   before: "Element.show('loader')",
+                   success: "Element.hide('loader')"
+                 }
+  %>
+</div>
+
+        </div>
+    </td>
+    </tr>
+    <tr  class="tr-head" style="text-align:center;">
+      <td>Filiere</td>
+      <td colspan="3" >Classe</td>
+    </tr>
+    <tr class="tr-even" style="text-align:center;">
+
+    <td>
+
+            <div class="col-md-12 pull-left">
+        <div class="form-group">
+          <label class="control-label" for="name"></label>
+
+        <div style="margin: 0 auto;">
+  <%= select_tag :school_field_id, options_for_select(@school_fields.map { |u| [u.name, u.id] }),
+                 prompt: "#{t('school_field')}",
+                 data: {
+                   remote: true,
+                   url: { controller: "requestdoc_students", action: "filters", method: :get },
+                   with: "'requestdoc=' + $('requestdoc_id').value + '&sf=' + this.value + '&batch=' + $('batch_id').value + '&sy=' + $('school_year_id').value + '&statut=' + $('statut').value + '&doc_spec=' + $('doctype_id').value + '&printed=' + $('printed').value",
+                   before: "Element.show('loader')",
+                   complete: "Element.hide('loader')"
+                 }
+  %>
+</div>
+
+      </div>
+      </div>
+    </td>
+    <td colspan="3" >
+    <div class="col-md-12 pull-left">
+        <div class="form-group">
+          <label class="control-label" for="name"></label>
+
+    <div id="filters_batchs">
+  <div style="margin: 0 auto;">
+    <%= select_tag :batch_id, options_for_select(@batchs.map { |u| [u.full_name, u.id] }),
+                   prompt: "#{t('batch')}",
+                   data: {
+                     remote: true,
+                     url: { controller: "requestdoc_students", action: "filters", method: :get },
+                     with: "'requestdoc=' + $('requestdoc_id').value + '&sf=' + $('school_field_id').value + '&batch=' + this.value + '&sy=' + $('school_year_id').value + '&statut=' + $('statut').value + '&doc_spec=' + $('doctype_id').value + '&printed=' + $('printed').value",
+                     before: "Element.show('loader')",
+                     complete: "Element.hide('loader')"
+                   }
+    %>
+  </div>
+</div>
+
+      </div>
+      </div>
+
+    </td>
+
+  </tr>
+  <tr class="tr-head" style="text-align:center;">
+    <td colspan="3">Sous-filtres</td>
+  </tr>
+  <tr class="tr-even" style="text-align:center;">
+    <td >Type : </td>
+    <td colspan="3">
+          <div class="col-md-12 pull-left">
+        <div class="form-group">
+          <label class="control-label" for="name"></label>
+      <div id="types">
+    <% if params[:requestdoc].to_i == 9 %><div  style="margin: 0 auto;">
+<%= select :doctype, :id,options_for_select(@doc_types.map {|u| [u.rdv_doc,u.rdv_doc]}),
+                               {:prompt => "Type"},
+                               {:onChange => "#{remote_function(:url => {:controller => "requestdoc_students", :action => "filters",:method => "get"},
+                       :with => "'requestdoc='+ $('requestdoc_id').value +'&sf='+$('school_field_id').value+'&batch='+$('batch_id').value+'&sy='+$('school_year_id').value+'&statut='+$('statut').value+'&doc_spec='+value+'&printed='+$('printed').value",
+                       :before => "Element.show('loader')",
+                       :success => "Element.hide('loader')"
+                       )}"      }
+        %></div>
+        <% elsif params[:requestdoc].to_i == 13 %>
+<div style="margin: 0 auto;">
+<%= select :doctype, :id,options_for_select(@doc_types.map {|u| [u.doc_specification,u.doc_specification]}),
+                               {:prompt => "Type"},
+                               {:onChange => "#{remote_function(:url => {:controller => "requestdoc_students", :action => "filters",:method => "get"},
+                       :with => "'requestdoc='+ $('requestdoc_id').value +'&sf='+$('school_field_id').value+'&batch='+$('batch_id').value+'&sy='+$('school_year_id').value+'&statut='+$('statut').value+'&doc_spec='+value+'&printed='+$('printed').value",
+                       :before => "Element.show('loader')",
+                       :success => "Element.hide('loader')"
+                       )}"      }
+        %></div>
+        <% else %><div style="margin: 0 auto;">
+        <%= select :doctype, :id,options_for_select(@doc_types.map {|u| [u,u]}),
+                               {:prompt => "Type"},
+                               {:onChange => "#{remote_function(:url => {:controller => "requestdoc_students", :action => "filters",:method => "get"},
+                       :with => "'requestdoc='+ $('requestdoc_id').value +'&sf='+$('school_field_id').value+'&batch='+$('batch_id').value+'&sy='+$('school_year_id').value+'&statut='+$('statut').value+'&doc_spec='+value+'&printed='+$('printed').value",
+                       :before => "Element.show('loader')",
+                       :success => "Element.hide('loader')"
+                       )}"      }
+        %></div>
+        <%#end %>
+      </div>
+</div>
+
+    </td>
+  </tr>
+   <tr class="tr-even" style="text-align:center;">
+    <td >Imprimé : </td>
+    <td colspan="3">
+      <div class="col-md-12 pull-left">
+        <div class="form-group">
+          <label class="control-label" for="name"></label>
+      <div  style="margin: 0 auto;">
+        <select id="printed">
+          <option value="" selected disabled>Imprimé</option>
+          <option value="1">Oui</option>
+          <option value="0">En-cours</option>
+        </select>
+      </div>
+      </div>
+    </td>
+  </tr>
+  <tr><td colspan="5"></td></tr>
+
+</table>
+</div>
+<% end %>
+<!-- EoF Filters -->
+
+<%= image_tag("loader.gif",
+      :align => "absmiddle",
+      :border => 0,
+      :id => "loader",
+      :style =>"display: none;" ) %>
+<% if @current_user.admin? or @current_user.privileges.map{|p| p.name}.include?("GestionDemandes") %>
+<div id="page-yield">
+
+  <% unless flash[:notice].nil? %>
+    <p class="flash-msg"> <%= flash[:notice] %> </p>
+  <% end %>
+
+<div id="tablle" style="overflow: scroll;width: 62rem;">
+
+<% form_for :requestdoc_student, :url => { :controller => 'requestdoc_students', :action => 'multi_edit',  :transfer => @requestdoc_ids }, :remote => true do |f| %>
+
+<table class="table table-bordered table-lg table-v2 table-striped" align="center" width="100%" cellpadding="1" cellspacing="1" style="padding: 10px 10px 10px;">
+<tr class="tr-head" style="font-size: 13px;"><td colspan="8">Total des demandes : <%= @requestdoc_students.count %></td></tr>
+
+<tr class="tr-head" style="font-size: 12px;">
+    <th>Etudiant</th>
+    <th>Document</th>
+    <th>Validé par</th>
+    <th>Statut</th>
+    <th>Motif</th>
+    <th>Année scolaire</th>
+    <th>Filiere</th>
+    <th>Classe</th>
+    <th>Demande date</th>
+    <th>Dernière date d'impr.</th>
+  </tr>
+
+<% @requestdoc_students.each  do |requestdoc_student| %>
+<tr class="tr-<%= cycle('odd', 'even')%>" style="font-size: 11px;">
+    <td>
+<%if requestdoc_student.student
+  link_to "#{requestdoc_student.student.full_name}", :controller => 'student', :action => 'profile' ,:id=>requestdoc_student.student.id
+end%>
+
+      <% if requestdoc_student.requestdoc.id == 12 %>(<%= requestdoc_student.student.phone1 %>)<% end %></td>
+    <td><%=h requestdoc_student.requestdoc.name %></td>
+    <td><% if requestdoc_student.validated_by
+  user = User.find(requestdoc_student.validated_by)
+%>
+<%= user.full_name %>
+<% else %>
+Pas encore
+<% end %>
+</td>
+    <td>
+        <% if requestdoc_student.statut.to_i == 1 %>
+                Signé
+
+  <% elsif requestdoc_student.statut.to_i == 3 %>
+    Valide
+
+  <% elsif requestdoc_student.statut.nil? %>
+    En-cours..
+  <% else %>
+    Rejetée
+  <% end %>
+    </td>
+    <td><%= requestdoc_student.motif unless requestdoc_student.motif.nil? %></td>
+    <td><%=h requestdoc_student.school_year %></td>
+
+    <td><%if requestdoc_student.student
+     requestdoc_student.student.batch.school_field.name
+   end%></td>
+    <td><%if requestdoc_student.student
+     requestdoc_student.student.batch.full_name
+   end%></td>
+
+    <td><%=h requestdoc_student.created_at %></td>
+    <td><%=h requestdoc_student.last_print_date %></td>
+    <% if @current_user.admin? or @current_user.privileges.map{|p| p.name}.include?("GestionDemandes") %>
+  <td>
+    <%= button_to_remote "👁", {:url => {:controller => "requestdoc_students", :action => "show"},
+                                    :with => "'id='+#{requestdoc_student.id}",
+                                    :before => "Element.show('loader')",
+                    :success => "Element.hide('loader')"},:class => "submit_button"
+                                %>
+  </td>
+<!--    <td><%= link_to 'Afficher', requestdoc_student %></td>
+
+    <td><%= link_to 'Editer', edit_requestdoc_student_path(requestdoc_student) %></td>
+    <td><%= link_to 'Supprimer', requestdoc_student, :confirm => 'Vous êtes sûre?', :method => :delete %></td>
+-->    <%end%>
+  </tr>
+
+<% end %>
+</table>
+<%end%>
+</div>
+</div>
+</div>
+<% elsif @current_user.student? %>
+<div class="col-lg-12">
+<table class="table table-bordered table-lg table-v2 table-striped" align="center" width="100%" cellpadding="1" cellspacing="1" style="padding: 10px 10px 10px;">
+  <tr class="tr-head"><td colspan="8" style="font-size: 13px;">Total des demandes : <%= @requestdoc_students.count %></td></tr>
+<tr class="tr-head" style="font-size: 12px;">
+    <th>Type document</th>
+    <th>Statut</th>
+    <th>Motif</th>
+    <th>Date de récupération</th>
+    <th>Cause de rejet</th>
+    <th>Observation</th>
+    <th>Date de la demande</th>
+    <th>Télécharger</th>
+  </tr>
+
+<% @requestdoc_students.each  do |requestdoc_student| %>
+<tr class="info tr-<%= cycle('odd','even') %>" style="font-size: 11px;">
+    <td><%=h requestdoc_student.requestdoc.name %></td>
+    <td>
+  <% if requestdoc_student.statut.to_i == 1 %>
+    Disponible
+  <% elsif requestdoc_student.statut.nil? or requestdoc_student.statut.to_i == 3 %>
+    En-cours..
+  <% else %>
+    Rejetée
+  <% end %>
+    </td>
+    <td><%= requestdoc_student.motif unless requestdoc_student.motif.nil? %></td>
+
+    <td><%= requestdoc_student.recovery_date %></td>
+    <td><%= requestdoc_student.reject_cause %></td>
+    <td><%= requestdoc_student.observation %></td>
+    <td><%= requestdoc_student.created_at %></td>
+  <% if requestdoc_student.statut.to_i == 1 %>
+  <!--
+    <td style="text-align: center"><a href="https://lgi.iav.ac.ma/system/docs/rn/<%= requestdoc_student.file_hex  %>.pdf" target="_blank" style="font-weight: bold" >ici</a></td>
+  -->
+    <% else %>
+    <td style="text-align: center">Pas encore</td>
+    <% end %>
+    <td class=""><%= button_to_remote "Voir", :url => {:controller => "requestdoc_students", :action => "show"},
+                                :with   => "'id='+#{requestdoc_student.id}",
+                                :before => "Element.show('loader')",
+                :success => "Element.hide('loader')"
+                                %></td>
+</tr>
+
+<% end %>
+</table>
+</div>
+</div>
+<% end %> <!-- eof table -->
+
+
+<div id=""> </div>
+<div id=""> </div>
+<div id="modal-box" style="display:none;"></div>
+<%= observe_field :statut, :url => { :action => "filters" },
+           :with => "'requestdoc='+ $('requestdoc_id').value +'&sf='+$('school_field_id').value+'&batch='+$('batch_id').value+'&sy='+$('school_year_id').value+'&statut='+$('statut').value+'&doc_spec='+$('doctype_id').value+'&printed='+$('printed').value",
+          :before => "Element.show('loader')",
+        :success => "Element.hide('loader')"
+%>
+
+<%= observe_field :printed, :url => { :action => "filters" },
+           :with => "'requestdoc='+ $('requestdoc_id').value +'&sf='+$('school_field_id').value+'&batch='+$('batch_id').value+'&sy='+$('school_year_id').value+'&statut='+$('statut').value+'&doc_spec='+$('doctype_id').value+'&printed='+$('printed').value",
+          :before => "Element.show('loader')",
+        :success => "Element.hide('loader')"
+%>

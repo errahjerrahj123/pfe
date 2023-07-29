@@ -1,0 +1,102 @@
+<%-# ENIM
+#Copyright 2010 Cactus IT Technologies Private Limited
+#
+#This product includes software developed at
+#Project ENIM - http://www.projectENIM.org/
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing,
+#software distributed under the License is distributed on an
+#"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#KIND, either express or implied.  See the License for the
+#specific language governing permissions and limitations
+#under the License. -%>
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+   <li class="breadcrumb-item">
+    <%= link_to t('configuration_text')+" "+"Académique", { controller: 'configuration', action:'advanced' }  %> 
+    <%= link_to t('courses_text')+"-"+ t('home') , { controller: "courses", action: "index" }  %> 
+    <%= t('manage_course') %>
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('Niveaux') %> - <%= t('Gérer les niveaux') %></h1>
+      </div>
+    </div><!--/.row-->
+    <div class="row">
+      <div class="col-md-12 pull-left">
+        <div class="panel-default">
+          <div class="tabs">
+            <ul class="nav nav-tabs">
+              <li><%= link_to "nouveau", new_course_path %> </li>
+            </ul>
+          </div>
+        </div>
+        <hr>
+      </div>
+    </div>
+
+
+    <div class="row">
+
+      <% unless flash[:notice].nil? %>
+        <div class="col-md-12 pull-left">
+          <p class="flash-msg"> <%= flash[:notice] %> </p>
+        </div>
+      <% end %>
+
+
+      <% unless flash[:warn_notice].nil? %>
+        <div class="col-md-12 pull-left">
+          <div id="errorExplanation" class="errorExplanation"><%= flash[:warn_notice] %> </div>
+        </div>
+      <% end %>
+      <div class="col-md-12 pull-left">
+        <table class="table table-bordered table-lg table-v2 table-striped ">
+          <tr>
+            <th>
+              <%= t('Niveaux') %>
+            </th>
+            <th></th>
+            <th></th>
+          </tr>
+          <% Course.all.each do |course| %>
+            <tr>
+              <td>
+                <%#= link_to course.full_name, course_path(course) %>
+                 <%= link_to course.full_name, {controller: "courses" , action: "show" , id: course.id} %>
+              </td>
+              <td style="width:100px">
+                <%= link_to "Modifier", edit_course_path(course), if: can?(:update, :courses) %>
+
+              </td>
+              <td style="width:100px">
+               <%#= link_to 'delete_text', course_path(course), method: :delete, data: { confirm: 'Are you sure?' }, if: can?(:destroy, :courses) %>
+<%#= link_to 'delete_text', method: :delete, data: { confirm: 'Are you sure?' } %>
+<%= button_to course_path(course), method: :delete, data: { confirm: 'Are you sure?' } do %>
+    Delete Text 
+<% end %>
+<%#= button_to "Delete",  course, method: :delete, class: "btn btn-danger", confirm: "Are you sure that you wish to delete #{course.id}?" %></td>
+<td><%#= link_to "Delete", course_path(course), method: :delete %></td>
+
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+      <div class="extender"></div>
+    </div>
+  </div>
+</div>

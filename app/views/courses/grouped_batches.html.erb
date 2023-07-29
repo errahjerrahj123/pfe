@@ -1,0 +1,82 @@
+<%-# ENIM
+#Copyright 2010 Cactus IT Technologies Private Limited
+#
+#This product includes software developed at
+#Project ENIM - http://www.projectENIM.org/
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing,
+#software distributed under the License is distributed on an
+#"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#KIND, either express or implied.  See the License for the
+#specific language governing permissions and limitations
+#under the License. -%>
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+   <li class="breadcrumb-item">
+    <%= link_to t('configuration_text')+" "+"Académique", { controller: "configuration", action: "advanced" }  %> &nbsp;
+      &raquo;&nbsp;
+    <%= link_to t('courses_text')+"-"+ t('home'), { controller: "courses", action: "index" }  %> &nbsp;&raquo;&nbsp;
+    <%= link_to t('manage_course'), { controller: "courses", action: "manage_courses" }  %> &nbsp;&raquo;&nbsp;
+     <%= link_to t('courses_text') + "-"+t('show') , { controller: "courses", action: "show", id: @course.id }  %> &nbsp;&raquo;&nbsp;
+    <%=  "Grouped Batches"  %>
+    
+  </li>
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%="Grouped Batches"%></h1>
+      </div>
+    </div>
+<!--/.row-->
+<div class="row">
+  <div class="col-md-12 pull-left">
+    <div id="flash"></div>
+  </div>
+  <div class="col-md-12 pull-left">
+    <div id="errors">
+      <%#= error_messages_for 'batch_group' %>
+    </div>
+  </div>
+  <div>
+  <%= form_with url: { action: "create_batch_group", course_id: @course.id },method: :post , remote: true do |c| %>
+    <div class="form-group col-md-6 pull-left">
+      <label class="control-label" for="name">Name</label>
+      <%= c.text_field :name, class: "form-control" %>
+    </div>
+        <div class="form-group col-md-6 pull-left">
+          <label class="control-label" for="name">Select Batches :</label>
+          <br>
+         <%= link_to t('all'), "#", onclick: "$$('input.batches_box').forEach(function(checkbox) { checkbox.checked = true; }); return false;" %> -
+<%= link_to t('none'), "#", onclick: "$$('input.batches_box').forEach(function(checkbox) { checkbox.checked = false; }); return false;" %> 
+
+          <% @batches.each do |b| %>
+            <div class="checkbox">
+              <label>
+                <%= check_box_tag "batch_ids[]", b.id,false %> <%= b.name %>
+              </label>
+            </div>
+          <% end %>
+        </div>
+        <div class="extender"></div>
+        <div class="col-md-12 pull-left text-right">
+          <%=submit_tag(('create_text'), :class=>"btn btn-primary") %>
+        </div>
+    <% end %>
+  </div>
+  <div id="category-list" class="col-md-12 pull-left" style="width:100%">
+    <%#= render "batch_groups" %>
+  </div>
+
+</div>

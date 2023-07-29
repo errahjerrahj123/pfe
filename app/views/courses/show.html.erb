@@ -1,0 +1,98 @@
+<%-# ENIM
+#Copyright 2010 Cactus IT Technologies Private Limited
+#
+#This product includes software developed at
+#Project ENIM - http://www.projectENIM.org/
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing,
+#software distributed under the License is distributed on an
+#"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#KIND, either express or implied.  See the License for the
+#specific language governing permissions and limitations
+#under the License. -%>
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+ <li class="breadcrumb-item">
+    <%= link_to t('configuration_text')+" "+"Académique", { controller:  "configuration", action: "advanced" }  %> &nbsp;
+      &raquo;&nbsp;
+    <%= link_to t('courses_text')+"-"+ t('home'), { controller: "courses", action: "index" }  %> &nbsp;&raquo;&nbsp;
+    <%= link_to t('manage_course'), manage_courses_path %> &nbsp;&raquo;&nbsp;
+    <%= t('courses_text') %> - <%= t('show') %>
+  </li> 
+
+
+</ul>
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('Niveaux') %> - <%= t('Montrer') %></h1>
+      </div>
+    </div><!--/.row-->
+
+    <div class="row">
+      <div class="col-md-12 pull-left">
+        <div class="panel-default">
+          <div class="tabs">
+            <ul class="nav nav-tabs">
+              <li><%= link_to "Groupes des classes" , {controller: "grp_batches", action: "new" , course_id: @course.id} %> </li>
+              <li><%= link_to ('Nouveaux'), new_course_batch_path(@course) %> </li>
+              <li><%= link_to "Group Batches", {controller: "courses", action: "grouped_batches", id: @course.id} %> </li>
+              <% if can?(:edit, :course) %>
+                <li><%= link_to "#{t('edit_text')}", edit_course_path(@course) , if: can?(:edit, :course) %></li>
+              <%  end %>
+              <%  if can?(:destroy, :course)%>
+                <li><%= link_to("#{t('delete_text')}", course_path(@course), method: 'delete', confirm: "#{t('delete_confirm_msg')}") %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+        <hr>
+      </div>
+    </div>
+    <div class="row">
+      <% unless flash[:notice].nil? %>
+        <div class="col-md-12 pull-left">
+          <p class="flash-msg"> <%= flash[:notice] %> </p>
+        </div>
+      <% end %>
+
+
+      <div class="col-md-12 pull-left">
+        <table class="table table-bordered table-lg table-v2 table-striped ">
+          <% @batch.each do |batch| %>
+            <tr>
+              <td>
+                <%= link_to batch.full_name, course_path(@course, batch) %>
+
+              </td>
+              <td style="width:100px">
+                <%= link_to ('Modifier'), edit_course_batch_path(@course, batch) ,if: can?(:edit, :batches )%>
+              </td>
+              <td style="width:100px">
+                
+      
+  <%= link_to ('Supprimer') ,{controller: 'batches', action: 'destroy', id:  batch.id}  %>
+
+              </td>
+              <td style="width:100px">
+                <%= link_to "Sous-Groupes de classe",{ controller: 'batch_grps', action: 'new', id:  batch} %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+        <div class="extender"></div>
+    </div>
+  </div>
+</div>

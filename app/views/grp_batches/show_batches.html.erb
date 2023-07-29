@@ -1,0 +1,121 @@
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+    <a href="."><%= "Liste des classes du groupe"  %></a>
+  </li>
+</ul>
+
+
+<div class="content-i" >
+   <div class="content-box">
+      <div class="row">
+         <div class="col-lg-12">
+            <h2 class="page-header"></h2>
+         </div>
+      </div>
+
+      <div class='row'>
+         <% unless flash[:notice].nil? %>
+         <p class="flash-msg"> <%= flash[:notice] %> </p>
+         <% end %>
+
+
+
+
+
+  
+
+ 
+
+<div class="content-i">
+
+    <div class="row">
+      <div class="col-lg-12">
+        <h3 class="page-header"><%= @grp_batch.name %>  </h3>
+
+        <h4 class="page-header"><%= "Liste des classes du groupe"  %></h4>
+      </div>
+    </div>
+<% unless @grp_batch_batches.blank? %>
+<% form_for :show_det, :url => { :controller => 'grp_batches', :action => 'destroy_all', :grp_batch_id => @grp_batch.id 
+} do |f| %>
+
+
+    <table id="listing" width="100%" class="table table-bordered table-lg table-v2 table-striped fixed_headers">   
+      <tr class="tr-head">
+                   <td>classe</td>
+                   <td>
+                    <%= link_to_function t('all'), "$$('input.rightt').each(function(checkbox) { checkbox.checked = true; });" %>,
+                    <%= link_to_function t('none'), "$$('input.rightt').each(function(checkbox) { checkbox.checked = false; });" %>
+                   </td>
+               </tr>
+               <tr></tr>
+               <% @grp_batch_batches.each do |lgs|
+  
+                           batch= Batch.find(lgs.batch_id)
+               %>
+               <tr class="tr-<%= cycle('odd', 'even') %>">
+                    <td class="col-2"><%=  batch.name  %></td>
+                    <td class="col-2"><%= check_box_tag 'destroy_res[batches][]', batch.id, false,:class=>"rightt" %></td>
+               </tr>
+               <% end %>
+
+    </table>
+
+    <%= submit_tag "", :value => "► #{t('delete')}", :class => "btn btn-primary" %>
+<% end %>
+<% else %>
+<h4 class="page-header">Aucune classe  n'est affecté à ce groupe, ajouter parmi la liste dessous!</h4>
+<% end %>
+</div>
+</div>
+<br><br>
+  <label >
+    <%= image_tag("loader.gif",:align => "absmiddle",:border => 0,:id => "loader", :style =>"display: none;" ) %>
+  </label>
+
+    <div id="students_list">
+    <% form_for :show_det, :url => { :controller => 'grp_batches', :action => 'add_all',
+     :grp_batch_id => @grp_batch.id } do |f| %>
+    <%#= f.hidden_field :batch_id, :value => @batch_group.batch_id %>
+    <div class="content-i">
+    <div class="content-box">
+        <div class="row">
+          <div class="col-lg-12">
+            <h3 class="page-header">Ajouter d'autre classe</h3>
+          </div>
+        </div>
+
+        <table id="listing" width="100%" class="table table-bordered table-lg table-v2 table-striped fixed_headers">   
+                <% unless  @batches.blank? %>
+          <tr class="tr-head">
+                      
+                       <td>classe</td>
+                       <td>
+                        <%= link_to_function t('all'), "$$('input.righttt').each(function(checkbox) { checkbox.checked = true; });" %>,
+                        <%= link_to_function t('none'), "$$('input.righttt').each(function(checkbox) { checkbox.checked = false; });" %>
+                       </td>
+                   </tr>
+                   <tr></tr>
+                   <% @batches.each do |batch|
+                               batch=Batch.find(batch.id)
+                   %>
+                   <tr class="tr-<%= cycle('odd', 'even') %>">
+                       
+                        <td class="col-2"><%= batch.name %></td>
+                        <td class="col-2"><%= check_box_tag 'add_res[batches][]', batch.id, false,:class=>"righttt" %></td>
+                   </tr>
+                   <% end %>
+                <% end %>
+        </table>
+
+        <%= submit_tag "", :value => "► #{t('add')}", :class => "btn btn-primary" %>
+    </div>
+    </div>
+    <% end %>
+   </div>
+

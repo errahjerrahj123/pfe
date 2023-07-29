@@ -1,0 +1,39 @@
+
+
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/">
+      <em class="fa fa-home"></em>
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+  <%= link_to t('manage_users'), utilisateurs_path %> &nbsp;&raquo;&nbsp;
+  <%= t('create_user') %>
+</li>
+</ul> 
+<div class="content-i">
+  <div class="content-box">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header"><%= t('make_new_admin_user') %></h1>
+      </div>
+    </div>
+    <div class="row">
+
+      <% unless flash[:notice].nil? %> <div class="col-lg-12"><p class="flash-msg"> <%= flash[:notice] %> </p></div> <% end %>
+      <style>
+        form{width:100%}
+      </style>
+      <div class="col-lg-12">
+          <div id="necessary-field-notification"><%= t('legend1') %> <span class="necessary-field">*</span> <%= t('legend2') %>  (<%= t('only_admin_user_can_created') %>)</div>
+<br>
+
+
+
+<%= render "form", user: @user %>
+
+
+
+<br>
+
+
